@@ -1,6 +1,8 @@
 <html>
 	<head>
 		<title>Tick-Tock Pop-Up</title>
+
+		<script type="text/javascript" src="../../js/addsite.js"></script>
 		<link rel="stylesheet" href="popup.css"/>
 		
 	</head>
@@ -8,18 +10,10 @@
 		<div id="wrapper">
 	  	<div id="menu-items">
 	  		<div name="texts"></div>
-	  		<form name="add"><input type="text" name="newsite"><button type="submit" onClick="submitform()">Quick Add +</button></form>
-	  		<p />
+	  		<input type="text" id="newsite"><button id="qa">Quick Add +</button>
+			<p />
 			<a href="../options.html" target="_blank">Options</a>
 		</div>
 		</div>
-		<script type="text/javascript">
-			function submitform()
-			{
-				var text = document.getElementById('newsite').value;
-				document.getElementById('texts').innerHTML = text;
-
-			}
-		</script>
 	</body>
 </html>
