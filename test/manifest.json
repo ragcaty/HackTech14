@@ -18,6 +18,7 @@
     "default_title": "Test Title"
   },
   "permissions": [
+   "alarms",
    "tabs",
    "webRequest",
    "webRequestBlocking",
