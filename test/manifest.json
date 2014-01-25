@@ -1,28 +1,31 @@
 {
-  "manifest_version": 2,
-  "name": "TEST",
-  "version": "2.1",
-
-  "description": "Web blocker/analyzer",
-  "icons": {
-    "16": "images/test16.png",
-    "48": "images/test48.png",
-    "128": "images/test.png"
-  },
   "browser_action": {
+    "default_popup": "Popup/popup.html",
     "default_icon": {
       "16": "images/test16.png",
       "48": "images/test48.png",
       "128": "images/test.png"
     },
-    "default_title": "Test Title"
+    "default_title": "Tick-Tock"
   },
+  "description": "Tracks website usage and blocks specific ones",
+  "icons": {
+    "16": "images/test16.png",
+    "48": "images/test48.png",
+    "128": "images/test.png"
+  },
+  "manifest_version": 2,
+  "name": "Tick-Tock",
+  "options_page": "options.html",
   "permissions": [
+   "activeTab",
    "alarms",
+   "notifications",
    "tabs",
    "webRequest",
    "webRequestBlocking",
    "<all_urls>"
   ],
-  "options_page": "options.html"
+  "update_url": "https://clients2.google.com/service/update2/crx",
+  "version": "2.1"
 }
