@@ -1,0 +1,21 @@
+{
+  "manifest_version": 2,
+  "name": "TEST",
+  "version": "2.1",
+
+  "description": "Web blocker/analyzer",
+  "icons": {
+    "16": "images/test16.png",
+    "48": "images/test48.png",
+    "128": "images/test.png"
+  },
+  "browser_action": {
+    "default_icon": {
+      "16": "images/test16.png",
+      "48": "images/test48.png",
+      "128": "images/test.png"
+    },
+    "default_title": "Test Title"
+  },
+  "options_page": "options.html"
+}
