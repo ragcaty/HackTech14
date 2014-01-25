@@ -10,5 +10,5 @@
    "options_page": "options.html",
    "permissions": [ "activeTab", "alarms", "notifications", "tabs", "storage" ],
    "update_url": "https://clients2.google.com/service/update2/crx",
-   "version": "2.1"
+   "version": "0.0"
 }
