@@ -17,5 +17,10 @@
     },
     "default_title": "Test Title"
   },
+  "permissions": [
+   "webRequest",
+   "webRequestBlocking",
+   "*://*.google.com/"
+  ],
   "options_page": "options.html"
 }
