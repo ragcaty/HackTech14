@@ -1,11 +1,13 @@
-var S ="fe3h";
+var S ="ge4h";
 alert(S);
-chrome.webRequest.onCompleted.addListener(
-  function(details) {
-   alert("hello");
-  },
-  {urls: ["<all_urls>"]},
-  ["blocking"]
-);
 
+chrome.webRequest.onSendHeaders.addListener(
+  function(details) {
+    console.log(details.url);
+    return;
+  },
+  {urls: ["<all_urls>"],
+   types: ["main_frame"]},
+  ["requestHeaders"]
+);
   

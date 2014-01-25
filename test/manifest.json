@@ -20,7 +20,7 @@
   "permissions": [
    "webRequest",
    "webRequestBlocking",
-   "*://*.google.com/"
+   "<all_urls>"
   ],
   "options_page": "options.html"
 }
