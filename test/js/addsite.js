@@ -40,8 +40,6 @@ function submitform()
 				text1 = temp;
 		}
 
-		
-
 		var time;
 		//Main function
 		document.getElementById('error').innerHTML = '';
@@ -110,6 +108,18 @@ document.addEventListener('DOMContentLoad ed', function () {
 document.addEventListener('DOMContentLoaded', function() {
 	document.getElementById('newsite').addEventListener('click', function() {this.placeholder=''});
 });
+//rollover preset event
+document.addEventListener('DOMContentLoaded', function() {
+	document.getElementById('top10').addEventListener('mouseover', function() {this.innerHTML='reddit youtube twitter tumblr facebook pinterest buzzfeed imgur 9gag 4chan</body>'});
+	document.getElementById('top10').addEventListener('mouseout', function() {this.innerHTML='the top 10'});
+});
+//click event.
+/*document.addEventListener('DOMContentLoaded', function() {
+	document.getElementById('top10').addEventListener('click', function() {
+		var top = new Array();
+
+	});
+});*/
 
 //Perform running update on list of sites. (and times 'til "completion")
 function update()
@@ -135,7 +145,12 @@ function update()
 					{
 						document.getElementById('texts').appendChild(input);
 						document.getElementById('texts').appendChild(document.createTextNode('\t'));
-						document.getElementById('options' + i).addEventListener('click', function() {if(confirm("Delete " + pers + " from the list?")){localStorage.removeItem(pers);update();return;}}); 						
+						document.getElementById('options' + i).addEventListener('click', function() {if(confirm("Delete " + pers + " from the list?")){
+							var tem = JSON.parse(localStorage[pers]);
+							tem.allowedTime = -1;
+							tem.blocked = false;
+							localStorage[pers] = JSON.stringify(tem);
+							update();return;}}); 						
 					}	
 		
 					else {
@@ -155,7 +170,10 @@ function update()
 							document.getElementById('texts').appendChild(document.createTextNode('\t'));
 						}
 						nblked = true;
-						document.getElementById('options'+i).addEventListener('click', function() {if(confirm("Delete " + pers + " from the list?")){localStorage.removeItem(pers);return;}}); 
+						document.getElementById('options'+i).addEventListener('click', function() {if(confirm("Delete " + pers + " from the list?")){var tem = JSON.parse(localStorage[pers]);
+							tem.allowedTime = -1;
+							tem.blocked = false;
+							localStorage[pers] = JSON.stringify(tem);update();return;}}); 
 					}
 				}
 				}

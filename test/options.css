@@ -33,6 +33,12 @@ h2 {
 	
 }
 
+#top10:hover {
+	font-size: 15px;
+	height: 24px;
+	padding-top: 7px;
+}
+
 
 #box {
 	width:500px;
@@ -42,7 +48,7 @@ h2 {
 }
 
 #newsite {
-	width:360px;
+	width:362px;
 }
 
 #qa {
