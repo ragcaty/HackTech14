@@ -101,8 +101,8 @@ function submitform()
 //Initially restore sites that were located in memory.
 document.addEventListener('DOMContentLoaded', function() {update();})
 //Button click event.
-document.addEventListener('DOMContentLoad ed', function () {
-	    document.getElementById('qa').addEventListener('click', submitform);
+document.addEventListener('DOMContentLoaded', function () {
+	    document.getElementById('qa').addEventListener('click', function() {submitform()});
 });
 //Textbox click event.
 document.addEventListener('DOMContentLoaded', function() {
