@@ -98,8 +98,11 @@ function submitform()
 			var attr = {
 				allowedTime: time,
 				blocked: true,
+				startTime: null,
 				tabIds: [],
-				instances: 0
+				instances: 0,
+				totalTime: 0,
+				totalStartTime: null
 			};
 			localStorage[text1] = JSON.stringify(attr);
 		}
@@ -148,11 +151,14 @@ document.addEventListener('DOMContentLoaded', function() {
 		if (open) 
 		{
 			info.style.cssText = 'background-color:#AAAAAA; height: 50px;';
+			document.getElementById('canvas1').style.cssText = "height: 70%; width: 85%; border:1px solid #000000; display: none;background-color: #FFFFFF;";
 			open = false;
 		} 
 		else 
 		{
-			info.style.cssText = 'background-color:#AAAAAA;height: 500px; width:100%;';
+			info.style.cssText = 'background-color:#AAAAAA;height: 300px; width:100%;';
+			document.getElementById('canvas1').style.cssText = "height: 70%; width: 85%; border:1px solid #000000;background-color: #FFFFFF;";
+			topFive();
 			open = true;
 		}
 	})});
@@ -173,11 +179,11 @@ function update()
 				//Only show list of blocked sites, not visited sites.
 				if(b.blocked == true)
 				{
-					var properval = b.allowedTime%60 > 9? b.allowedTime%60 : "0" + (b.allowedTime%60).toString();
+					var properval = b.allowedTime%60 > 9? b.allowedTime%60 : "0" + (Math.floor(b.allowedTime%60)).toString();
 					var pers = localStorage.key(i);
 					var input = document.createElement("a");
 
-					input.innerHTML = '<div style="width:100%"><div style="display:inline;width:70%; margin: 0 auto;">' + pers + '</div><div style="float: right; width:30%;display:inline;text-align:right;">'+ parseInt(b.allowedTime/60, 10) + ':' + properval + '</div></div>';
+					input.innerHTML = '<div style="width:100%"><div style="display:inline;width:70%; margin: 0 auto;">' + pers + '</div><div style="float: right; width:30%;display:inline;text-align:right;">'+ parseInt(b.allowedTime/60, 10) + ':' + (properval) + '</div></div>';
 					input.id = pers;
 					if (nblked != false)
 					{
@@ -225,3 +231,47 @@ function update()
 			document.getElementById('newsite').value = '';
 			document.getElementById('number').value = '';}
 	}
+
+
+	document.addEventListener('DOMContentLoaded', function() {topFive();});
+
+function topFive()
+{
+	var temp = [];
+	var sum = 0;
+	for(var i = 0, len = localStorage.length; i < len; i++)
+	{
+		if (localStorage.key(i) != "current_url")
+		{
+			temp.push ([localStorage.key(i), JSON.parse(localStorage[localStorage.key(i)]).totalTime]);
+			sum += temp[localStorage.key(i)];
+			//console.log(localStorage.key(i) + " " + temp[localStorage.key(i)]);
+		}
+	}
+
+	var temp2 = temp.sort(function(a,b){return temp[b] - temp[a]});
+
+	var c = document.getElementById('canvas1');
+	var ctx = c.getContext("2d");
+
+	var midsum = temp2[0][1] + temp2[1][1] + temp2[2][1] + temp2[3][1] + temp2[4][1];
+
+	var myColor = ["#CC9933","#D95B43","#C02942","#542437","#53777A"];
+
+	var lastend = 0;
+	for (var i = 0; i < 5; i++)
+	{
+		ctx.fillStyle = myColor[i];
+		ctx.beginPath();
+		ctx.moveTo(c.width/2,c.height/2);
+		ctx.arc(c.width/2,c.height/2, c.height/2 - c.height/8, lastend, lastend + Math.PI * 2 * ((temp[i][1])/midsum), false);
+		ctx.lineTo(c.width/2, c.height/2);
+		ctx.fill();
+		lastend += Math.PI*2*((temp[i][1])/midsum);
+	}
+
+	
+	console.log(temp2);
+
+
+}

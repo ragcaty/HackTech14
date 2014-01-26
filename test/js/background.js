@@ -44,9 +44,12 @@ chrome.tabs.onRemoved.addListener(
 chrome.tabs.onUpdated.addListener(
   function(ti, info, tab) {
 	  var url = urlRegex(tab.url);
-    var newAttr = JSON.parse(localStorage[url]);
-		newAttr.totalStartTime = new Date().getTime();
-		localStorage[url] = JSON.stringify(newAttr);
+    if (localStorage.getItem(url) !== null)
+    {   
+      var newAttr = JSON.parse(localStorage[url]);
+      newAttr.totalStartTime = new Date().getTime();
+      localStorage[url] = JSON.stringify(newAttr);
+    }
 		var found = false;
     for(var x in localStorage) {
 		  if(found)
@@ -155,9 +158,9 @@ chrome.tabs.onActivated.addListener(
   function(info) {
     var pastUrl = localStorage["current_url"];
     if(pastUrl == "" || pastUrl == undefined || localStorage[pastUrl] == undefined){
-      pastUrl = "nhakeiahmaglgdpfkdfkeelbegcfnbfl";
+      pastUrl = "options.html";
     }
-    var pastAttr = JSON.parse(localStorage[pastUrl]);
+      var pastAttr = JSON.parse(localStorage[pastUrl]);
     var currUrl;
     for(var x in localStorage) { 
       if(x == "current_url" || x=="" || x == undefined){
@@ -174,7 +177,7 @@ chrome.tabs.onActivated.addListener(
         break;
     }
 		if(currUrl == undefined) 
-		  currUrl = "nhakeiahmaglgpfkdfkeelbegcfnbf";
+		  currUrl = "options.html";
     localStorage["current_url"] = currUrl;
 		pastAttr = addTotal(pastAttr);
     if(pastAttr.blocked) {
@@ -230,7 +233,7 @@ function loadTabs() {
 					localStorage[url] = JSON.stringify(attr);
 				}
 		  }
-		  localStorage["current_url"] = "nhakeiahmaglgdpfkdfkeelbegcfnbfl";
+		  localStorage["current_url"] = "options.html";
 	  }
   );
 }
