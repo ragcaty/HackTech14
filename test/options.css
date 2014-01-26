@@ -80,8 +80,8 @@ body {
 }
 
 #analysis{
-	padding-bottom: 5px;
-	padding-top: 5px;
+	padding-bottom: 2px;
+	padding-top: 2px;
 }
 
 #analysis:hover {
@@ -89,26 +89,5 @@ body {
 }
 #analysisholder
 {
-	animation: slideout 2s linear 2s ;
-	-webkit-animation: slideout 2s linear 2s ;
-	-webkit-animation-fill-mode: forwards;
 	background: #AAAAAA;
-}
-
-@keyframes slideout
-{
-	0% {height:0px;}
-	25%{height:125px;}
-	50%{height:250px;}
-	75%{height:375px;}
-	100%{height:500px;}
-}
-
-@-webkit-keyframes slideout
-{
-	0% {height:0px;}
-	25%{height:125px;}
-	50%{height:250px;}
-	75%{height:375px;}
-	100%{height:500px;}
 }

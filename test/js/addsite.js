@@ -138,9 +138,24 @@ document.addEventListener('DOMContentLoaded', function() {
 
 	});
 });*/
-//click event.
+
+
+//click event to modify size of "Analysis" table. Toggle switch on/off.
+var open = false;
 document.addEventListener('DOMContentLoaded', function() {
-	document.getElementById('analysis').addEventListener('click', function() {var info = document.getElementById('analysisholder'); info.style = 'background-color:#AAAAAA;height: 500px';})});
+	document.getElementById('analysis').addEventListener('click', function() {
+		var info = document.getElementById('analysisholder'); 
+		if (open) 
+		{
+			info.style.cssText = 'background-color:#AAAAAA; height: 50px;';
+			open = false;
+		} 
+		else 
+		{
+			info.style.cssText = 'background-color:#AAAAAA;height: 500px; width:100%;';
+			open = true;
+		}
+	})});
 
 //Perform running update on list of sites. (and times 'til "completion")
 function update()
