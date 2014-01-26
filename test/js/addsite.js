@@ -135,12 +135,12 @@ document.addEventListener('DOMContentLoaded', function() {
 	document.getElementById('top10').addEventListener('mouseout', function() {this.innerHTML='the top 10'});
 });
 //click event.
-/*document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function() {
 	document.getElementById('top10').addEventListener('click', function() {
 		var top = new Array();
-
+		top = ["reddit.com", "youtube.com", "twitter.com", "tumblr.com", "facebook.com", "pinterest.com", "buzzfeed.com", "img.ur", "9gag.com", "4chan.com"];
 	});
-});*/
+});
 
 
 //click event to modify size of "Analysis" table. Toggle switch on/off.
@@ -151,7 +151,7 @@ document.addEventListener('DOMContentLoaded', function() {
 		if (open) 
 		{
 		  var di = document.getElementById('legend');
-			di.style.cssText = "display:none;";
+			di.style.cssText = "display:none;width:50px;";
 			info.style.cssText = 'background-color:#AAAAAA; height: 50px;';
 			document.getElementById('canvas1').style.cssText = "height: 70%; width: 85%; border:1px solid #000000; display: none;background-color: #FFFFFF;";
 			open = false;
@@ -162,7 +162,6 @@ document.addEventListener('DOMContentLoaded', function() {
   		di.style.cssText = "";
 			info.style.cssText = 'background-color:#AAAAAA;height: 300px; width:100%;';
 			document.getElementById('canvas1').style.cssText = "height: 70%; width: 85%; border:1px solid #000000;background-color: #FFFFFF;";
-			topFive();
 			open = true;
 		}
 	})});
@@ -252,9 +251,10 @@ function topFive()
 			//console.log(localStorage.key(i) + " " + temp[localStorage.key(i)]);
 		}
 	}
-
-	var temp2 = temp.sort(function(a,b){return temp[b] - temp[a]});
-
+	var temp2 = temp.sort(function(a, b) {
+		return b[1] - a[1]});
+	for(var x in temp2)
+		console.log ("hi "+ temp2[x][0] + " " + temp2[x][1]);
 	var c = document.getElementById('canvas1');
 	var ctx = c.getContext("2d");
   var text = [temp2[0][0], temp2[1][0], temp2[2][0], temp2[3][0], temp2[4][0]];

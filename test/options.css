@@ -93,7 +93,9 @@ body {
 }
 #legend
 {
-        font-family: Verdana;
+	padding-top: 8px;
+
+    font-family: arial;
 	font-style:bold;
-	font-size:14px;
+	font-size:12px;
 }
