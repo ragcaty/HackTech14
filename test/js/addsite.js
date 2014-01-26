@@ -11,19 +11,26 @@ function submitform()
 
 	if (text1 != '' && text2 != '')
 	{
+		if((text2.search("^[0-9.]+$") == -1))
+		{
+			document.getElementById('error').innerHTML = "Invalid timeframe.";
+			return;
+		}
 		//Preprocessing for URLS
-		if((text1.search("^[A-Za-z0-9]")) == -1)
+		if(((text1.search("^[A-Za-z0-9]")) == -1) || (text1.search(".[A-Za-z]+") == -1))
 		{
 			document.getElementById('error').innerHTML = "Invalid site.";
 			return;
 		}
-
+		//get rid of protocol header.
 		text1 = text1.replace(/.*?:\/\//g, "");
 
+		//remove www. 
 		var x = text1.search("^www.");
 		if (x == 0)
 			text1 = text1.substr(x + 4, text1.length-1);
 
+		//all subdomains fall under the general umbrella of the main domain.
 		var x = text1.search("\/");
 		if (x != -1)
 		{
@@ -33,19 +40,52 @@ function submitform()
 				text1 = temp;
 		}
 
+		
+
+		var time;
 		//Main function
 		document.getElementById('error').innerHTML = '';
 		switch(text3)
 		{
 			case "sec":
-				localStorage[text1] = text2-0;
+				time = text2-0;
 				break;
 			case "min":
-				localStorage[text1] = (text2-0)*60;
+				time = (text2-0)*60;
 				break;
 			case "hr":
-				localStorage[text1] = (text2-0)*60*60;
+				time = (text2-0)*60*60;
 		}
+
+		//If site has been visited before, mark as blocked.
+		if (localStorage.getItem(text1) !== null)
+		{
+			var attr = JSON.parse(localStorage[text1]);
+			if (attr.blocked != true)
+			{
+				attr.allowedTime = time;
+				attr.blocked = true;
+				localStorage[text1] = JSON.stringify(attr);
+			}
+			else
+			{
+				//Site has already been marked as blocked, no need to do anything.
+				document.getElementById('error').innerHTML = "Site already in queue."
+				return;
+			}
+		}
+		else
+		{
+			//Create new entry since site has never been visited or blocked.
+			var attr = {
+				allowedTime: time,
+				blocked: true,
+				instances: 0
+			};
+			localStorage[text1] = JSON.stringify(attr);
+		}
+		
+
 		count = count + 1;
 		update();
 
@@ -60,47 +100,67 @@ function submitform()
 	}
 }
 
-//document.getElementById('qa').onClick = submitform();
+//Initially restore sites that were located in memory.
 document.addEventListener('DOMContentLoaded', function() {update();})
-document.addEventListener('DOMContentLoaded', function () {
+//Button click event.
+document.addEventListener('DOMContentLoad ed', function () {
 	    document.getElementById('qa').addEventListener('click', submitform);
 });
+//Textbox click event.
+document.addEventListener('DOMContentLoaded', function() {
+	document.getElementById('newsite').addEventListener('click', function() {this.placeholder=''});
+});
 
+//Perform running update on list of sites. (and times 'til "completion")
 function update()
 	{	
+		var nblked = false;
 		for (var i=0, len=localStorage.length; i<len; i++)
 		{
-			if (i > 0)
+			(function(i)
 			{
-				//document.getElementById('texts').innerHTML += "<tr><td>(x)</td>";
-				//document.getElementById('texts').innerHTML += "<td>" + localStorage.key(i) + "</td></tr>"; 
-				document.getElementById('texts').innerHTML += "<a id=\"options" + i + "\">" +  localStorage.key(i) + "</a><br />";
-				console.log("options" + i);
-			}	
-
-			else {
-				document.getElementById('texts').innerHTML = "<a id=\"options" + i + "\">" + localStorage.key(i) + "</a><br />";
-				//console.log("options"+i);
-				/*var tbl = document.createElement('table');
-				var tr = document.createElement('tr');
-				var td = document.createElement('td');
-				td.appendChild( document.createTextNode("(x)"));*/
-				//var td = tr.insertCell(1);
-				//td.innerHTML = localStorage.key(i);
-				//document.getElementById('texts').innerHTML = "<table style=\"border:1px;width:auto;table-layout:fixed\"><tbody><tr><td>(x)</td><td>" + localStorage.key(i) + "</td></tr>";
-				//document.getElementById('texts').innerHTML += localStorage.key(i) + "</td></tr>";
-			}
+				//Only entry in localStorage that does not fit the format
+			if (localStorage.key(i) != "current_url")
+			{
+				var b = localStorage[localStorage.key(i)]? (JSON.parse(localStorage[localStorage.key(i)])) : [];
 			
-
-	    /*document.getElementById('options' + i).addEventListener('click', function() {
-	    	console.log("That happened.");
-	    	if(confirm('Are you sure you want to delete' + localStorage.key(i) + '?'))
-	    		localStorage.removeItem(localStorage.key(i));
-	    });
-	    console.log(i);*/
-		}
-		//document.getElementById('texts').innerHTML += "</tbody></table>";
+				//Only show list of blocked sites, not visited sites.
+				if(b.blocked == true)
+				{
+					var pers = localStorage.key(i);
+					var input = document.createElement("a");
+					input.innerHTML = pers;
+					input.id = "options" + i;
+					if (nblked != false)
+					{
+						document.getElementById('texts').appendChild(input);
+						document.getElementById('texts').appendChild(document.createTextNode('\t'));
+						document.getElementById('options' + i).addEventListener('click', function() {if(confirm("Delete " + pers + " from the list?")){localStorage.removeItem(pers);update();return;}}); 						
+					}	
 		
-		document.getElementById('newsite').value = '';
-		document.getElementById('number').value = '';
+					else {
+						if(document.getElementById('texts').firstChild === null)
+						{
+							document.getElementById('texts').appendChild(input);
+							document.getElementById('texts').appendChild(document.createTextNode('\t'));
+						}
+						else
+						{ 
+							while(document.getElementById('texts').firstChild !== null)
+							{
+								var x = document.getElementById('texts').firstChild;
+								x.parentNode.removeChild(x);
+							}
+							document.getElementById('texts').appendChild(input);
+							document.getElementById('texts').appendChild(document.createTextNode('\t'));
+						}
+						nblked = true;
+						document.getElementById('options'+i).addEventListener('click', function() {if(confirm("Delete " + pers + " from the list?")){localStorage.removeItem(pers);return;}}); 
+					}
+				}
+				}
+			}(i));
+			
+			document.getElementById('newsite').value = '';
+			document.getElementById('number').value = '';}
 	}
