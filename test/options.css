@@ -33,6 +33,10 @@ h2 {
 	
 }
 
+body {
+	text-align:center;
+}
+
 #top10:hover {
 	font-size: 15px;
 	height: 24px;
@@ -41,9 +45,12 @@ h2 {
 
 
 #box {
-	width:500px;
+	width:44%;
 	font-family: Arial;
-	text-align:center;
+	margin-right: auto;
+	margin-left: auto;
+	margin-top: auto;
+	margin-bottom: auto;
 	font-size: 10px;
 }
 
@@ -54,7 +61,7 @@ h2 {
 }
 
 #newsite {
-	width:362px;
+	width:74.5%;
 }
 
 #qa {
@@ -70,4 +77,38 @@ h2 {
 	/*height:40px;*/
 	/*font-size:40px;
 	font-family: Arial;*/
+}
+
+#analysis{
+	padding-bottom: 5px;
+	padding-top: 5px;
+}
+
+#analysis:hover {
+	cursor: hand;
+}
+#analysisholder
+{
+	animation: slideout 2s linear 2s ;
+	-webkit-animation: slideout 2s linear 2s ;
+	-webkit-animation-fill-mode: forwards;
+	background: #AAAAAA;
+}
+
+@keyframes slideout
+{
+	0% {height:0px;}
+	25%{height:125px;}
+	50%{height:250px;}
+	75%{height:375px;}
+	100%{height:500px;}
+}
+
+@-webkit-keyframes slideout
+{
+	0% {height:0px;}
+	25%{height:125px;}
+	50%{height:250px;}
+	75%{height:375px;}
+	100%{height:500px;}
 }
