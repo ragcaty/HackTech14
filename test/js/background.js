@@ -1,36 +1,45 @@
-/*chrome.tabs.onRemoved.addListener(
+chrome.tabs.onRemoved.addListener(
   function(tabid, removeInfo) {
     console.log(tabid);
-    var url = idToUrl[tabid];
-    console.log("R U " + url);
-    console.log("L S " + localStorage[url]);
-    console.log((new Date() - localStorage[url])/60000);
-    delete idToUrl[tabid];
-    delete localStorage[url];
-  }
-);*/
-
-chrome.tabs.onUpdated.addListener(
-  function(ti, info, tab) {
-console.log("came here");
-    for(var x = 0; x<localStorage.length; x++) {
-      var attr = JSON.parse(localStorage[localStorage.key(x)]);
+    for(var y=0; y<localStorage.length; y++) {
+      var x = localStorage.key(y);
+      if(x == "current_url")
+        continue;
+      var attr = JSON.parse(localStorage[x]);
+      console.log(x + " " + attr.tabIds[0]);
       for(var i = 0; i<attr.tabIds.length; i++) {
-        if(attr.tabIds[i] == ti) {
-          if(info.url != localStorage.key(x)) {
-	    if(i == 0) {
-	      delete localStorage[localStorage.key(x)];
-	      return;
-	    }
-	    attr.tabIds.splice(i, 1);
-	    localStorage[localStorage.key(x)] = JSON.stringify(attr);
-	  }
+        if(attr.tabIds[i] == tabid) {
+	  attr.tabIds.splice(i, 1);
+	  attr.instances = attr.instances - 1;
+	  localStorage[x] = JSON.stringify(attr);
 	}
       }
     }
   }
 );
-      
+
+chrome.tabs.onUpdated.addListener(
+  function(ti, info, tab) {
+    for(var x in localStorage) {
+      if(x == "current_url")
+        continue;
+      var attr = JSON.parse(localStorage[x]);
+      var url = tab.url;
+      url =url.replace(/.*?:\/\//g,"");
+      url =url.replace(/www\./g, "");
+      url =url.substr(0,url.search("\/"));
+      for(var i = 0; i<attr.tabIds.length; i++) {
+        if(attr.tabIds[i] == ti) {
+          if(url != x) {
+	    attr.tabIds.splice(i, 1);
+	    attr.instances = attr.instances -1;
+	    localStorage[x] = JSON.stringify(attr);
+	  }
+        }
+      }
+    }
+  }
+);
 
 function hasAlarmAlready(url) {
   chrome.alarms.get(url, 
@@ -42,7 +51,7 @@ function hasAlarmAlready(url) {
   );
 }
 
-chrome.webRequest.onSendHeaders.addListener(
+chrome.webRequest.onCompleted.addListener(
   function(details) {
     if(details.url == "https://www.google.com/_/chrome/newtab?espv=210&ie=UTF-8")
       return;
@@ -82,7 +91,7 @@ chrome.webRequest.onSendHeaders.addListener(
   },
   {urls: ["<all_urls>"],
    types: ["main_frame"],},
-  ["requestHeaders"]
+  ["responseHeaders"]
 
 );
 
