@@ -1,5 +1,5 @@
 var sites = new Array();
-var count = localStorage.length
+var count = localStorage.length;
 
 function testAlarm() {
   var url = "reddit.com";
@@ -125,10 +125,7 @@ document.addEventListener('DOMContentLoaded', function() {update();})
 document.addEventListener('DOMContentLoaded', function () {
 	    document.getElementById('qa').addEventListener('click', function() {submitform()});
 });
-//Textbox click event.
-document.addEventListener('DOMContentLoaded', function() {
-	document.getElementById('newsite').addEventListener('click', function() {this.placeholder=''});
-});
+
 //rollover preset event
 document.addEventListener('DOMContentLoaded', function() {
 	document.getElementById('top10').addEventListener('mouseover', function() {this.innerHTML='reddit youtube twitter tumblr facebook pinterest buzzfeed imgur 9gag 4chan</body>'});
@@ -141,6 +138,9 @@ document.addEventListener('DOMContentLoaded', function() {
 
 	});
 });*/
+//click event.
+document.addEventListener('DOMContentLoaded', function() {
+	document.getElementById('analysis').addEventListener('click', function() {var info = document.getElementById('analysisholder'); info.style = 'background-color:#AAAAAA;height: 500px';})});
 
 //Perform running update on list of sites. (and times 'til "completion")
 function update()
@@ -159,8 +159,10 @@ function update()
 				//Only show list of blocked sites, not visited sites.
 				if(b.blocked == true)
 				{
+					var properval = b.allowedTime%60 > 9? b.allowedTime%60 : "0" + (b.allowedTime%60).toString();
 					var pers = localStorage.key(i);
 					var input = document.createElement("a");
+<<<<<<< HEAD
 					input.innerHTML = pers;
 					input.id = pers;
 					if (nblked != false)
@@ -168,6 +170,16 @@ function update()
 						document.getElementById('texts').appendChild(input);
 						document.getElementById('texts').appendChild(document.createTextNode('\t'));
 						document.getElementById(pers).addEventListener('click', function() {if(confirm("Delete " + pers + " from the list?")){
+=======
+					input.innerHTML = '<div style="width:100%"><div style="display:inline;width:70%; margin: 0 auto;">' + pers + '</div><div style="float: right; width:30%;display:inline;text-align:right;">'+ parseInt(b.allowedTime/60, 10) + ':' + properval + '</div></div>';
+					input.id = "options" + i;
+					if (nblked != false)
+					{
+						document.getElementById('texts').appendChild(input);
+						//create timestamp
+						document.getElementById('texts').appendChild(document.createTextNode(''));
+						document.getElementById('options' + i).addEventListener('click', function() {if(confirm("Delete " + pers + " from the list?")){
+>>>>>>> collaboration
 							var tem = JSON.parse(localStorage[pers]);
 							tem.allowedTime = -1;
 							tem.blocked = false;
