@@ -1,6 +1,24 @@
 var sites = new Array();
 var count = localStorage.length
 
+function testAlarm() {
+  var url = "reddit.com";
+  var attr = JSON.parse(localStorage[url]);
+  if(attr != undefined) {
+    attr.allowedTime = 10;
+    attr.blocked = true;
+    attr.startTime = new Date().getTime();
+    localStorage[url] = JSON.stringify(attr);
+  }
+  chrome.alarms.create(url, {when: attr.startTime + attr.allowedTime*1000});
+  console.log("DONE");
+  chrome.alarms.getAll(
+    function(a) {
+      for(var x in a)
+        console.log(a[x].name + " " +a[x].scheduledTime);
+    }
+  );
+}
 
 function submitform()
 {
@@ -152,7 +170,6 @@ function update()
 							localStorage[pers] = JSON.stringify(tem);
 							update();return;}}); 						
 					}	
-		
 					else {
 						if(document.getElementById('texts').firstChild === null)
 						{
