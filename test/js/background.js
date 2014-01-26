@@ -10,6 +10,28 @@
   }
 );*/
 
+chrome.tabs.onUpdated.addListener(
+  function(ti, info, tab) {
+console.log("came here");
+    for(var x = 0; x<localStorage.length; x++) {
+      var attr = JSON.parse(localStorage[localStorage.key(x)]);
+      for(var i = 0; i<attr.tabIds.length; i++) {
+        if(attr.tabIds[i] == ti) {
+          if(info.url != localStorage.key(x)) {
+	    if(i == 0) {
+	      delete localStorage[localStorage.key(x)];
+	      return;
+	    }
+	    attr.tabIds.splice(i, 1);
+	    localStorage[localStorage.key(x)] = JSON.stringify(attr);
+	  }
+	}
+      }
+    }
+  }
+);
+      
+
 function hasAlarmAlready(url) {
   chrome.alarms.get(url, 
     function  (a) {
@@ -108,13 +130,5 @@ function testAlarm() {
     }
   );
 }
-    
-
-document.addEventListener('DOMContentLoaded', 
-  function() {
-    document.getElementById('store').innerHTML = localStorage.length;
-    document.getElementById('clickme').addEventListener('click', testAlarm);
-  }
-)*/
-
+*/    
 
