@@ -7,6 +7,7 @@ function testAlarm() {
   if(attr != undefined) {
     attr.allowedTime = 10;
     attr.blocked = true;
+		attr.tabIds = [];
     attr.startTime = new Date().getTime();
     localStorage[url] = JSON.stringify(attr);
   }
@@ -81,6 +82,7 @@ function submitform()
 			{
 				attr.allowedTime = time;
 				attr.blocked = true;
+				attr.tabIds = [];
 				localStorage[text1] = JSON.stringify(attr);
 			}
 			else
@@ -96,6 +98,7 @@ function submitform()
 			var attr = {
 				allowedTime: time,
 				blocked: true,
+				tabIds: [],
 				instances: 0
 			};
 			localStorage[text1] = JSON.stringify(attr);
@@ -142,6 +145,7 @@ document.addEventListener('DOMContentLoaded', function() {
 //Perform running update on list of sites. (and times 'til "completion")
 function update()
 	{	
+	console.log("hi in update");
 		var nblked = false;
 		for (var i=0, len=localStorage.length; i<len; i++)
 		{
@@ -158,15 +162,16 @@ function update()
 					var pers = localStorage.key(i);
 					var input = document.createElement("a");
 					input.innerHTML = pers;
-					input.id = "options" + i;
+					input.id = pers;
 					if (nblked != false)
 					{
 						document.getElementById('texts').appendChild(input);
 						document.getElementById('texts').appendChild(document.createTextNode('\t'));
-						document.getElementById('options' + i).addEventListener('click', function() {if(confirm("Delete " + pers + " from the list?")){
+						document.getElementById(pers).addEventListener('click', function() {if(confirm("Delete " + pers + " from the list?")){
 							var tem = JSON.parse(localStorage[pers]);
 							tem.allowedTime = -1;
 							tem.blocked = false;
+							tem.tabIds = [];
 							localStorage[pers] = JSON.stringify(tem);
 							update();return;}}); 						
 					}	
@@ -178,6 +183,7 @@ function update()
 						}
 						else
 						{ 
+						  console.log("debug remove");
 							while(document.getElementById('texts').firstChild !== null)
 							{
 								var x = document.getElementById('texts').firstChild;
@@ -187,9 +193,10 @@ function update()
 							document.getElementById('texts').appendChild(document.createTextNode('\t'));
 						}
 						nblked = true;
-						document.getElementById('options'+i).addEventListener('click', function() {if(confirm("Delete " + pers + " from the list?")){var tem = JSON.parse(localStorage[pers]);
+						document.getElementById(pers).addEventListener('click', function() {if(confirm("Delete " + pers + " from the list?")){var tem = JSON.parse(localStorage[pers]);
 							tem.allowedTime = -1;
 							tem.blocked = false;
+							tem.tabIds = [];
 							localStorage[pers] = JSON.stringify(tem);update();return;}}); 
 					}
 				}

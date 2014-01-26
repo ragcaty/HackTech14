@@ -1,13 +1,11 @@
 //When tab is removed, remove tabid from localStorage
 chrome.tabs.onRemoved.addListener(
   function(tabid, removeInfo) {
-    console.log(tabid);
     for(var y=0; y<localStorage.length; y++) {
       var x = localStorage.key(y);
-      if(x == "current_url")
-        continue;
+      if(x == "current_url" || x=="" || x == undefined){
+        continue;}
       var attr = JSON.parse(localStorage[x]);
-      console.log(x + " " + attr.tabIds[0]);
       for(var i = 0; i<attr.tabIds.length; i++) {
         if(attr.tabIds[i] == tabid) {
 	  attr.tabIds.splice(i, 1);
@@ -23,8 +21,9 @@ chrome.tabs.onRemoved.addListener(
 chrome.tabs.onUpdated.addListener(
   function(ti, info, tab) {
     for(var x in localStorage) {
-      if(x == "current_url")
+      if(x == "current_url" || x=="" || x == undefined){
         continue;
+      }
       var attr = JSON.parse(localStorage[x]);
       var url = tab.url;
       url =url.replace(/.*?:\/\//g,"");
@@ -63,49 +62,35 @@ chrome.webRequest.onCompleted.addListener(
     if(details.url == "https://www.google.com/_/chrome/newtab?espv=210&ie=UTF-8")
       return;
     var url = details.url;
-    console.log(url);
     url = url.replace(/.*?:\/\//g,"");
     url = url.replace(/www\./g, "");
     url = url.substr(0,url.search("\/"));
-    if(url == "reddit.com") {
+    if(localStorage[url] == undefined) {
+      var arr = [details.tabId];
       var attr = {
-        allowedTime: 10,
-	      blocked: true,
+        allowedTime: -1, 
+	      blocked: false, 
 	      startTime: new Date().getTime(),
-	      tabIds: [details.tabId],
-        instances: 1
+	      tabIds: arr,
+	      instances: 1
       }
       localStorage[url] = JSON.stringify(attr);
-      chrome.alarms.create(url, {when: attr.startTime + attr.allowedTime*1000});
     } else {
-      if(localStorage[url] == undefined) {
-        var arr = [details.tabId];
-        var attr = {
-          allowedTime: -1, 
-	        blocked: false, 
-	        startTime: new Date().getTime(),
-	        tabIds: arr,
-	        instances: 1
-        }
-        localStorage[url] = JSON.stringify(attr);
-      } else {
-        var attr = JSON.parse(localStorage[url]);
-        var str_id = attr.tabIds.toString();
-        if(str_id.search(details.tabId) == -1) {
-					attr.instances= attr.instances+ 1;
-					attr.tabIds.push(details.tabId);
-				}
-				if(attr.blocked == true) {
-					if(!hasAlarmAlready(attr.url)) {
-						attr.startTime = new Date().getTime();
-						chrome.alarms.create(url, {when: attr.startTime + attr.allowedTime*1000});
-		}
-				}
-				localStorage[url] = JSON.stringify(attr);
+      var attr = JSON.parse(localStorage[url]);
+      var str_id = attr.tabIds.toString();
+      if(str_id.search(details.tabId) == -1) {
+	  		attr.instances= attr.instances+ 1;
+		  	attr.tabIds.push(details.tabId);
+	  	}
+		  if(attr.blocked == true) {
+				if(!hasAlarmAlready(attr.url)) {
+					attr.startTime = new Date().getTime();
+					chrome.alarms.create(url, {when: attr.startTime + attr.allowedTime*1000});
+		    }
 			}
-	  }
+			localStorage[url] = JSON.stringify(attr);
+		}
     localStorage["current_url"] = url;
-    console.log(JSON.parse(localStorage[url]));
     return;
   },
   {urls: ["<all_urls>"],
@@ -121,20 +106,34 @@ chrome.alarms.onAlarm.addListener(
     var attr = JSON.parse(localStorage[a.name]);
     for(var x in attr.tabIds) {
       chrome.tabs.remove(attr.tabIds[x]);
+			attr.instances = attr.instances - 1;
     }
-    delete localStorage[a.name];
-
+		attr.allowedTime = -1;
+		attr.blocked = false;
+		attr.startTime = -1;
+		localStorage[a.name] = JSON.stringify(attr);
+		var views = chrome.extension.getViews();
+		for(var v in views) {
+		  if(views[v].document.title == "Tick-Tock Options") {
+			  views[v].document.getElementById(a.name).remove();
+			}
+		}
+		return;
   }
 );
 
 chrome.tabs.onActivated.addListener(
   function(info) {
     var pastUrl = localStorage["current_url"];
+    if(pastUrl == "" || pastUrl == undefined || localStorage[pastUrl] == undefined){
+      pastUrl = "nhakeiahmaglgdpfkdfkeelbegcfnbfl";
+    }
     var pastAttr = JSON.parse(localStorage[pastUrl]);
     var currUrl;
-    for(var x in localStorage) {
-      if(x == "current_url")
+    for(var x in localStorage) { 
+      if(x == "current_url" || x=="" || x == undefined){
         continue;
+			}
       var attr = JSON.parse(localStorage[x]);
       for(var i in attr.tabIds) {
         if(attr.tabIds[i] == info.tabId) {
@@ -145,6 +144,8 @@ chrome.tabs.onActivated.addListener(
       if(currUrl != undefined)
         break;
     }
+		if(currUrl == undefined) 
+		  currUrl = "nhakeiahmaglgpfkdfkeelbegcfnbf";
     localStorage["current_url"] = currUrl;
     if(pastAttr.blocked) {
       chrome.alarms.clear(pastUrl);
@@ -169,6 +170,9 @@ if(first ==0) {
 }
 
 function loadTabs() {
+  for(var y in localStorage) {
+	  delete localStorage[y];
+	}
   chrome.tabs.query({windowId: chrome.windows.WINDOW_ID_CURRENT},
 	  function(tabs) {
 		  for(var x in tabs) {
@@ -189,6 +193,10 @@ function loadTabs() {
         } else {
 				  var attr = JSON.parse(localStorage[url]);
 					attr.tabIds.push(tabs[x].id);
+					attr.tabIds = attr.tabIds.filter( 
+					  function(elem, pos) {
+						  return attr.tabIds.indexOf(elem) == pos;
+						});
 					attr.instances = attr.instances + 1;
 					localStorage[url] = JSON.stringify(attr);
 				}
@@ -202,7 +210,6 @@ function loadTabs() {
   chrome.tabs.query({currentWindow:true},
     function(arr) {
       var t;
-      console.log(arr.length);
       for(t=0; t<arr.length; t++) {
         var result = confirm("Do you want to delete " + arr[t].url);
         if (result)
@@ -222,11 +229,9 @@ function testAlarm() {
     localStorage[url] = JSON.stringify(attr);
   }
   chrome.alarms.create(url, {when: attr.startTime + attr.allowedTime*1000});
-  console.log("DONE");
   chrome.alarms.getAll(
     function(a) {
       for(var x in a)
-        console.log(a[x].name + " " +a[x].scheduledTime);
     }
   );
 }
