@@ -145,7 +145,6 @@ document.addEventListener('DOMContentLoaded', function() {
 //Perform running update on list of sites. (and times 'til "completion")
 function update()
 	{	
-	console.log("hi in update");
 		var nblked = false;
 		for (var i=0, len=localStorage.length; i<len; i++)
 		{
@@ -162,24 +161,16 @@ function update()
 					var properval = b.allowedTime%60 > 9? b.allowedTime%60 : "0" + (b.allowedTime%60).toString();
 					var pers = localStorage.key(i);
 					var input = document.createElement("a");
-<<<<<<< HEAD
-					input.innerHTML = pers;
-					input.id = pers;
-					if (nblked != false)
-					{
-						document.getElementById('texts').appendChild(input);
-						document.getElementById('texts').appendChild(document.createTextNode('\t'));
-						document.getElementById(pers).addEventListener('click', function() {if(confirm("Delete " + pers + " from the list?")){
-=======
+
 					input.innerHTML = '<div style="width:100%"><div style="display:inline;width:70%; margin: 0 auto;">' + pers + '</div><div style="float: right; width:30%;display:inline;text-align:right;">'+ parseInt(b.allowedTime/60, 10) + ':' + properval + '</div></div>';
-					input.id = "options" + i;
+					input.id = pers;
 					if (nblked != false)
 					{
 						document.getElementById('texts').appendChild(input);
 						//create timestamp
 						document.getElementById('texts').appendChild(document.createTextNode(''));
-						document.getElementById('options' + i).addEventListener('click', function() {if(confirm("Delete " + pers + " from the list?")){
->>>>>>> collaboration
+						document.getElementById(pers).addEventListener('click', function() {if(confirm("Delete " + pers + " from the list?")){
+
 							var tem = JSON.parse(localStorage[pers]);
 							tem.allowedTime = -1;
 							tem.blocked = false;
@@ -205,7 +196,8 @@ function update()
 							document.getElementById('texts').appendChild(document.createTextNode('\t'));
 						}
 						nblked = true;
-						document.getElementById(pers).addEventListener('click', function() {if(confirm("Delete " + pers + " from the list?")){var tem = JSON.parse(localStorage[pers]);
+						document.getElementById(pers).addEventListener('click', function() {if(confirm("Delete " + pers + " from the list?")){
+							var tem = JSON.parse(localStorage[pers]);
 							tem.allowedTime = -1;
 							tem.blocked = false;
 							tem.tabIds = [];
