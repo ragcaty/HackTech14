@@ -150,12 +150,16 @@ document.addEventListener('DOMContentLoaded', function() {
 		var info = document.getElementById('analysisholder'); 
 		if (open) 
 		{
+		  var di = document.getElementById('legend');
+			di.style.cssText = "display:none;";
 			info.style.cssText = 'background-color:#AAAAAA; height: 50px;';
 			document.getElementById('canvas1').style.cssText = "height: 70%; width: 85%; border:1px solid #000000; display: none;background-color: #FFFFFF;";
 			open = false;
 		} 
 		else 
 		{
+		  var di = document.getElementById('legend');
+  		di.style.cssText = "";
 			info.style.cssText = 'background-color:#AAAAAA;height: 300px; width:100%;';
 			document.getElementById('canvas1').style.cssText = "height: 70%; width: 85%; border:1px solid #000000;background-color: #FFFFFF;";
 			topFive();
@@ -241,7 +245,7 @@ function topFive()
 	var sum = 0;
 	for(var i = 0, len = localStorage.length; i < len; i++)
 	{
-		if (localStorage.key(i) != "current_url")
+		if (localStorage.key(i) != "current_url" && localStorage.key(i) != "options.html" && localStorage.key(i) != "extensions")
 		{
 			temp.push ([localStorage.key(i), JSON.parse(localStorage[localStorage.key(i)]).totalTime]);
 			sum += temp[localStorage.key(i)];
@@ -253,11 +257,12 @@ function topFive()
 
 	var c = document.getElementById('canvas1');
 	var ctx = c.getContext("2d");
-
+  var text = [temp2[0][0], temp2[1][0], temp2[2][0], temp2[3][0], temp2[4][0]];
 	var midsum = temp2[0][1] + temp2[1][1] + temp2[2][1] + temp2[3][1] + temp2[4][1];
 
 	var myColor = ["#CC9933","#D95B43","#C02942","#542437","#53777A"];
-
+  var di = document.getElementById('legend');
+	di.innerHTML = "<font color=#CC933>" + text[0] + "&nbsp;&nbsp;&nbsp;&nbsp;</font><tab><font color=#D95B43>" + text[1] + "&nbsp;&nbsp;&nbsp;&nbsp;</font><tab><font color=#C02942>" + text[2] + "&nbsp;&nbsp;&nbsp;&nbsp;</font><tab><font color=#542437>" + text[3] + "&nbsp;&nbsp;&nbsp;&nbsp;</font><tab><font color=#53777A>" + text[4];
 	var lastend = 0;
 	for (var i = 0; i < 5; i++)
 	{

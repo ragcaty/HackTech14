@@ -91,3 +91,9 @@ body {
 {
 	background: #AAAAAA;
 }
+#legend
+{
+        font-family: Verdana;
+	font-style:bold;
+	font-size:14px;
+}
